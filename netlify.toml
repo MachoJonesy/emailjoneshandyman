@@ -1,2 +1,6 @@
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[build]
+  command = "npm install --prefix netlify/functions/emailjoneshandyman"
