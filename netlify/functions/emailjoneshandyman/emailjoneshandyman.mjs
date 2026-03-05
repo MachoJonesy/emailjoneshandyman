@@ -23,8 +23,8 @@ export default async (req, context) => {
 
   try {
     await resend.emails.send({
-      from: "Contact Form <onboarding@resend.dev>", // replace once domain verified
-      to: "paul@joneshandyman.ca",                          // your actual email
+      from: "Contact Form <noreply@joneshandyman.ca>", 
+      to: "paul@joneshandyman.ca",                        
       subject: `New message from ${name}`,
       html: `
         <h2>New Contact Form Submission</h2>
