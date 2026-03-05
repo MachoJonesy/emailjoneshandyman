@@ -19,15 +19,15 @@ export default async (req, context) => {
 
   const { name, email, message } = await req.json();
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp0001.neo.space",
-    port: 465,
-    secure: true, // SSL/TLS
-    auth: {
-      user: Netlify.env.get("NEO_EMAIL"),
-      pass: Netlify.env.get("NEO_PASSWORD"),
-    },
-  });
+const transporter = nodemailer.createTransport({
+  host: "smtp0001.neo.space",
+  port: 587,
+  secure: false, // STARTTLS
+  auth: {
+    user: Netlify.env.get("NEO_EMAIL"),
+    pass: Netlify.env.get("NEO_PASSWORD"),
+  },
+});
 
   try {
     await transporter.sendMail({
