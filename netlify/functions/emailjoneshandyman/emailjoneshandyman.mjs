@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 export default async (req, context) => {
   // Handle CORS preflight
@@ -19,13 +19,22 @@ export default async (req, context) => {
 
   const { name, email, message } = await req.json();
 
-  const resend = new Resend(Netlify.env.get("RESEND_API_KEY"));
+  const transporter = nodemailer.createTransport({
+    host: "smtp0001.neo.space",
+    port: 465,
+    secure: true, // SSL/TLS
+    auth: {
+      user: Netlify.env.get("NEO_EMAIL"),
+      pass: Netlify.env.get("NEO_PASSWORD"),
+    },
+  });
 
   try {
-    await resend.emails.send({
-      from: "Contact Form <noreply@joneshandyman.ca>", 
-      to: "paul@joneshandyman.ca",                        
+    await transporter.sendMail({
+      from: `"Jones Handyman Contact Form" <${Netlify.env.get("NEO_EMAIL")}>`,
+      to: Netlify.env.get("NEO_EMAIL"),
       subject: `New message from ${name}`,
+      replyTo: email,
       html: `
         <h2>New Contact Form Submission</h2>
         <p><strong>Name:</strong> ${name}</p>
@@ -33,7 +42,6 @@ export default async (req, context) => {
         <p><strong>Message:</strong></p>
         <p>${message}</p>
       `,
-      reply_to: email,
     });
 
     return new Response(JSON.stringify({ success: true }), {
@@ -45,7 +53,7 @@ export default async (req, context) => {
     });
 
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Failed to send email" }), {
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: {
         "Content-Type": "application/json",
